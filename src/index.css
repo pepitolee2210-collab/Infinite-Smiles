@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", sans-serif;
+  --font-serif: "Nunito", sans-serif;
+  
+  --color-cream: #FFFFFF;
+  --color-ink: #5E4B66;
+  --color-terracotta: #E4649C;
+  --color-terracotta-light: #F2A950;
+  --color-sand: #78C2B4;
+  --color-blue: #39739D;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+* {
+  cursor: none !important;
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Custom dark mode date picker */
+::-webkit-calendar-picker-indicator {
+  filter: invert(0.5) sepia(1) saturate(3) hue-rotate(280deg);
+  opacity: 0.5;
+  cursor: pointer;
+}
