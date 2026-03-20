@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, X, Send, Bot, Loader2 } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
 
-// Initialize Gemini API
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// Initialize Gemini API only if key is available
+const apiKey = process.env.GEMINI_API_KEY;
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 type Message = {
   role: 'user' | 'model';
@@ -27,7 +28,7 @@ export default function Chatbot() {
 
   // Initialize chat session
   useEffect(() => {
-    if (!chatRef.current) {
+    if (!chatRef.current && ai) {
       chatRef.current = ai.chats.create({
         model: 'gemini-3-flash-preview',
         config: {
@@ -60,13 +61,20 @@ export default function Chatbot() {
     setIsLoading(true);
 
     try {
+      if (!chatRef.current) {
+        setMessages(prev => [...prev, {
+          role: 'model',
+          text: `El chat no está disponible en este momento. Por favor, contáctanos directamente por WhatsApp: ${WHATSAPP_LINK}`
+        }]);
+        return;
+      }
       const response = await chatRef.current.sendMessage({ message: userText });
       setMessages(prev => [...prev, { role: 'model', text: response.text }]);
     } catch (error) {
       console.error("Chat error:", error);
-      setMessages(prev => [...prev, { 
-        role: 'model', 
-        text: `Lo siento, tuve un problema de conexión. Por favor, contáctanos directamente por WhatsApp: ${WHATSAPP_LINK}` 
+      setMessages(prev => [...prev, {
+        role: 'model',
+        text: `Lo siento, tuve un problema de conexión. Por favor, contáctanos directamente por WhatsApp: ${WHATSAPP_LINK}`
       }]);
     } finally {
       setIsLoading(false);
