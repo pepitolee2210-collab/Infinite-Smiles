@@ -73,18 +73,19 @@ export default function Hero() {
         className="absolute inset-0 z-0"
       >
         <img 
-          src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=2000&auto=format&fit=crop" 
-          alt="Dental aesthetics" 
+          src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=1200&auto=format&fit=crop"
+          alt="Dental aesthetics"
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
+          loading="eager"
         />
         <div className="absolute inset-0 bg-pink/10 mix-blend-overlay"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream to-cream"></div>
       </motion.div>
 
       {/* Abstract Background Blobs */}
-      <div ref={blobRef1} className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-terracotta/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 z-0"></div>
-      <div ref={blobRef2} className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-80 sm:h-80 md:w-[30rem] md:h-[30rem] bg-sand/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 z-0"></div>
+      <div ref={blobRef1} className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-terracotta/30 rounded-full blur-2xl md:blur-3xl opacity-70 z-0" style={{ willChange: 'transform' }}></div>
+      <div ref={blobRef2} className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-80 sm:h-80 md:w-[30rem] md:h-[30rem] bg-sand/40 rounded-full blur-2xl md:blur-3xl opacity-70 z-0" style={{ willChange: 'transform' }}></div>
 
       <motion.div style={{ y, opacity, scale }} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         <div className="flex flex-col items-center text-center">

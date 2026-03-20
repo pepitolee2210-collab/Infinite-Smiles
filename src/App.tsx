@@ -15,7 +15,7 @@ import CustomCursor from './components/CustomCursor';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-cream selection:bg-terracotta selection:text-ink cursor-none">
+    <div className="min-h-screen bg-cream selection:bg-terracotta selection:text-ink">
       <CustomCursor />
       <Navbar />
       <main>

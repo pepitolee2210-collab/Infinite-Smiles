@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 
 interface MagneticButtonProps {
@@ -10,25 +10,33 @@ interface MagneticButtonProps {
   href?: string;
 }
 
+const isTouch = typeof window !== 'undefined' && (window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window);
+
 export default function MagneticButton({ children, className = "", type = "button", onClick, as = "button", href }: MagneticButtonProps) {
-  const ref = useRef<any>(null);
+  const ref = useRef<HTMLElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const handleMouse = (e: React.MouseEvent<any>) => {
+  const MotionComponent = useMemo(() => motion.create(as as any), [as]);
+
+  if (isTouch) {
+    const Tag = as;
+    return (
+      <Tag
+        type={as === "button" ? type : undefined}
+        href={as === "a" ? href : undefined}
+        onClick={onClick}
+        className={`relative overflow-hidden ${className}`}
+      >
+        {children}
+      </Tag>
+    );
+  }
+
+  const handleMouse = (e: React.MouseEvent) => {
     const { clientX, clientY } = e;
     const { height, width, left, top } = ref.current!.getBoundingClientRect();
-    const middleX = clientX - (left + width / 2);
-    const middleY = clientY - (top + height / 2);
-    setPosition({ x: middleX * 0.2, y: middleY * 0.2 });
+    setPosition({ x: (clientX - (left + width / 2)) * 0.2, y: (clientY - (top + height / 2)) * 0.2 });
   };
-
-  const reset = () => {
-    setPosition({ x: 0, y: 0 });
-  };
-
-  const { x, y } = position;
-
-  const MotionComponent = motion.create(as as any);
 
   return (
     <MotionComponent
@@ -37,8 +45,8 @@ export default function MagneticButton({ children, className = "", type = "butto
       href={as === "a" ? href : undefined}
       onClick={onClick}
       onMouseMove={handleMouse}
-      onMouseLeave={reset}
-      animate={{ x, y }}
+      onMouseLeave={() => setPosition({ x: 0, y: 0 })}
+      animate={{ x: position.x, y: position.y }}
       transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
       className={`relative overflow-hidden ${className}`}
     >

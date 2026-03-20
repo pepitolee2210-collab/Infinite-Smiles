@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
 
 const images = [
   { src: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=800&auto=format&fit=crop", tint: "bg-pink/20" },
@@ -28,11 +28,12 @@ export default function Gallery() {
         <motion.div style={{ x }} className="flex gap-4 sm:gap-8 pl-[10vw] sm:pl-[20vw] md:pl-[40vw] mt-20">
           {images.map((img, index) => (
             <div key={index} className="group relative h-[45vh] w-[80vw] sm:h-[50vh] sm:w-[70vw] md:h-[60vh] md:w-[40vw] overflow-hidden rounded-2xl sm:rounded-3xl shrink-0">
-              <motion.img 
-                src={img.src} 
+              <img
+                src={img.src}
                 alt={`Gallery image ${index + 1}`}
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 referrerPolicy="no-referrer"
+                loading="lazy"
               />
               <div className={`absolute inset-0 ${img.tint} mix-blend-overlay transition-opacity duration-500`} />
               <div className="absolute inset-0 bg-ink/30 group-hover:bg-transparent transition-colors duration-500" />

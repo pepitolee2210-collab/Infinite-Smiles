@@ -54,10 +54,11 @@ export default function Appointment() {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             >
               <img 
-                src="https://images.unsplash.com/photo-1598256989800-fea5f6c810fd?q=80&w=600&auto=format&fit=crop" 
-                alt="Dental care" 
+                src="https://images.unsplash.com/photo-1598256989800-fea5f6c810fd?q=80&w=600&auto=format&fit=crop"
+                alt="Dental care"
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
                 referrerPolicy="no-referrer"
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-plum/20 mix-blend-overlay pointer-events-none" />
             </motion.div>

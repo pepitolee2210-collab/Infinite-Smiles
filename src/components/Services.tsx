@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
 import { animate, stagger } from 'animejs';
 
 const services = [
@@ -9,29 +8,20 @@ const services = [
   { title: 'Armonización Orofacial', desc: 'Equilibrio estético del rostro y la sonrisa para resaltar tu belleza natural.', colSpan: 'col-span-1 md:col-span-2', bg: 'bg-white', img: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=800&auto=format&fit=crop', tint: 'bg-teal/30' },
 ];
 
-function ServiceCard({ service, index }: { service: any, index: number, key?: React.Key }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
-
+function ServiceCard({ service }: { service: typeof services[number] }) {
   return (
     <div
-      ref={cardRef}
       className={`bento-item rounded-[2rem] sm:rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between group overflow-hidden relative ${service.colSpan} ${service.bg}`}
       style={{ opacity: 0 }}
     >
       {service.img && (
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <motion.img 
-            style={{ y, scale: 1.1 }}
-            src={service.img} 
-            alt={service.title} 
-            className="w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-1000 ease-out" 
-            referrerPolicy="no-referrer" 
+          <img
+            src={service.img}
+            alt={service.title}
+            className="w-full h-full object-cover opacity-30 scale-110 group-hover:scale-105 transition-transform duration-1000 ease-out"
+            referrerPolicy="no-referrer"
+            loading="lazy"
           />
           <div className={`absolute inset-0 ${service.tint} mix-blend-overlay transition-opacity duration-500`} />
         </div>
@@ -90,7 +80,7 @@ export default function Services() {
 
       <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 auto-rows-[300px] sm:auto-rows-[350px]">
         {services.map((service, i) => (
-          <ServiceCard key={i} service={service} index={i} />
+          <ServiceCard key={i} service={service} />
         ))}
       </div>
     </section>

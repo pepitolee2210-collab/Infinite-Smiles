@@ -1,63 +1,65 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function CustomCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: 0, y: 0 });
+  const isHovering = useRef(false);
 
   useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    if (window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) {
+      setIsTouch(true);
+      return;
+    }
+
+    let raf: number;
+    const onMove = (e: MouseEvent) => {
+      pos.current = { x: e.clientX, y: e.clientY };
     };
 
-    const handleMouseOver = (e: MouseEvent) => {
+    const onOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.tagName.toLowerCase() === 'a' || target.tagName.toLowerCase() === 'button' || target.closest('a') || target.closest('button')) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
+      isHovering.current = !!(target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button'));
     };
 
-    window.addEventListener('mousemove', updateMousePosition);
-    window.addEventListener('mouseover', handleMouseOver);
+    const loop = () => {
+      if (dotRef.current) {
+        const s = isHovering.current ? 3 : 1;
+        dotRef.current.style.transform = `translate(${pos.current.x - 8}px, ${pos.current.y - 8}px) scale(${s})`;
+      }
+      if (ringRef.current) {
+        const s = isHovering.current ? 1.5 : 1;
+        ringRef.current.style.transform = `translate(${pos.current.x - 24}px, ${pos.current.y - 24}px) scale(${s})`;
+        ringRef.current.style.opacity = isHovering.current ? '0' : '1';
+      }
+      raf = requestAnimationFrame(loop);
+    };
+
+    window.addEventListener('mousemove', onMove, { passive: true });
+    window.addEventListener('mouseover', onOver, { passive: true });
+    raf = requestAnimationFrame(loop);
 
     return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
-      window.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseover', onOver);
+      cancelAnimationFrame(raf);
     };
   }, []);
 
+  if (isTouch) return null;
+
   return (
     <>
-      <motion.div
+      <div
+        ref={dotRef}
         className="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-[100] mix-blend-difference"
-        animate={{
-          x: mousePosition.x - 8,
-          y: mousePosition.y - 8,
-          scale: isHovering ? 3 : 1,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 28,
-          mass: 0.5
-        }}
+        style={{ willChange: 'transform' }}
       />
-      <motion.div
-        className="fixed top-0 left-0 w-12 h-12 border border-white/50 rounded-full pointer-events-none z-[99] mix-blend-difference"
-        animate={{
-          x: mousePosition.x - 24,
-          y: mousePosition.y - 24,
-          scale: isHovering ? 1.5 : 1,
-          opacity: isHovering ? 0 : 1
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 250,
-          damping: 20,
-          mass: 0.8
-        }}
+      <div
+        ref={ringRef}
+        className="fixed top-0 left-0 w-12 h-12 border border-white/50 rounded-full pointer-events-none z-[99] mix-blend-difference transition-opacity duration-200"
+        style={{ willChange: 'transform, opacity' }}
       />
     </>
   );
